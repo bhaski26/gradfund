@@ -5,8 +5,8 @@ from sqlalchemy import (
     DateTime
 )
 from sqlalchemy.sql import func
-
 from app.database.session import Base
+from sqlalchemy.orm import relationship
 
 
 class User(Base):
@@ -45,3 +45,9 @@ class User(Base):
         server_default=func.now(),
         onupdate=func.now()
     )
+
+    expenses = relationship(
+    "Expense",
+    back_populates="user",
+    cascade="all, delete-orphan"
+)

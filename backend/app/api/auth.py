@@ -13,6 +13,7 @@ from app.core.security import (
     create_access_token,
     get_current_user
 )
+from fastapi.security import OAuth2PasswordRequestForm
 
 router = APIRouter(
     prefix="/auth",
@@ -60,12 +61,12 @@ def register(
 
 @router.post("/login")
 def login(
-    user: UserLogin,
+    form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db)
 ):
     db_user = (
         db.query(User)
-        .filter(User.email == user.email)
+        .filter(User.email == form_data.username)
         .first()
     )
 
@@ -76,7 +77,7 @@ def login(
         )
 
     if not verify_password(
-        user.password,
+        form_data.password,
         db_user.hashed_password
     ):
         raise HTTPException(
@@ -97,11 +98,12 @@ def login(
 
 @router.get("/me")
 def get_me(
-    current_user: str = Depends(
+    current_user: User = Depends(
         get_current_user
     )
 ):
     return {
-        "email": current_user,
-        "message": "Protected route accessed"
+        "id": current_user.id,
+        "full_name": current_user.full_name,
+        "email": current_user.email
     }
