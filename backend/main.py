@@ -3,6 +3,7 @@ from app.database.init_db import *
 from app.api.user import router as user_router
 from app.api.auth import router as auth_router
 from app.api.expenses import router as expense_router
+from app.api.budget import router as budget_router
 
 app = FastAPI(
     title="GradFund API",
@@ -12,6 +13,7 @@ app = FastAPI(
 app.include_router(user_router)
 app.include_router(auth_router)
 app.include_router(expense_router)
+app.include_router(budget_router)
 
 
 @app.get("/")
