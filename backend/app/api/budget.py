@@ -8,7 +8,7 @@ from app.schemas.budget import (
     BudgetCreate,
     BudgetResponse
 )
-from app.schemas.dashboard import BudgetDashboard
+from app.schemas.dashboard import DashboardResponse
 from app.models.expense import Expense
 from sqlalchemy import func
 
@@ -50,7 +50,7 @@ def create_budget(
     
     return new_budget
 
-@router.get("/", response_model=BudgetDashboard)
+@router.get("/", response_model=BudgetResponse)
 def get_budget(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
@@ -69,61 +69,4 @@ def get_budget(
             detail="Budget not found"
         )
 
-    total_spent = (
-    db.query(
-        func.sum(Expense.amount)
-    )
-    .filter(
-        Expense.user_id == current_user.id
-    )
-    .scalar()
-)
-
-    if total_spent is None:
-        total_spent = 0
-
-    remaining = (
-    db_budget.monthly_limit
-    - total_spent
-)
-
-    usage_percentage = (
-    total_spent
-    / db_budget.monthly_limit
-) * 100
-
-    if usage_percentage < 80:
-        status = "Within Budget"
-        message = (
-            f"Excellent! You have used only "
-            f"{round(usage_percentage,2)}% "
-            f"of your monthly budget."
-        )
-
-    elif usage_percentage <= 100:
-        status = "Warning"
-        message = (
-            f"You have already used "
-            f"{round(usage_percentage,2)}% "
-            f"of your budget. Spend carefully."
-        )
-
-    else:
-        status = "Over Budget"
-        message = (
-            f"You have exceeded your budget "
-            f"by ₹{abs(remaining):.2f}."
-        )
-
-
-    return BudgetDashboard(
-    monthly_limit=db_budget.monthly_limit,
-    spent=total_spent,
-    remaining=remaining,
-    usage_percentage=round(
-        usage_percentage,
-        2
-    ),
-    status=status,
-    message=message
-)
+    return db_budget

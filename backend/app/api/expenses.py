@@ -130,47 +130,11 @@ def get_category_summary(
         for item in summary
     ]
 
-@router.get("/health-score")
-def get_health_score(
-    db: Session = Depends(get_db),
-    current_user: User = Depends(
-        get_current_user
-    )
-):
-    total_amount = (
-        db.query(
-            func.sum(Expense.amount)
-        )
-        .filter(
-            Expense.user_id == current_user.id
-        )
-        .scalar()
-    )
-
-    if total_amount is None:
-        total_amount = 0
-
-    if total_amount <= 500:
-        score = 90
-        status = "Excellent"
-
-    elif total_amount <= 2000:
-        score = 75
-        status = "Good"
-
-    elif total_amount <= 5000:
-        score = 60
-        status = "Fair"
-
-    else:
-        score = 40
-        status = "Needs Improvement"
-
-    return {
-        "total_spent": total_amount,
-        "health_score": score,
-        "status": status
-    }
+# ------------------------------------------------------------------
+# Deprecated:
+# Financial health is now calculated by the Dashboard API
+# (GET /dashboard) because it combines Budget, Income and Expenses.
+# ------------------------------------------------------------------
 
 @router.put("/{expense_id}")
 def update_expense(

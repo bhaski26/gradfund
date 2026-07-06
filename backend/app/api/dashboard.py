@@ -10,7 +10,7 @@ from app.models.budget import Budget
 from app.models.expense import Expense
 from app.models.income import Income
 
-from app.schemas.dashboard import BudgetDashboard
+from app.schemas.dashboard import DashboardResponse
 
 router = APIRouter(
     prefix="/dashboard",
@@ -18,7 +18,7 @@ router = APIRouter(
 )
 
 
-@router.get("/", response_model=BudgetDashboard)
+@router.get("/", response_model=DashboardResponse)
 def get_dashboard(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
@@ -78,6 +78,30 @@ def get_dashboard(
         / db_budget.monthly_limit
     ) * 100
 
+    if usage_percentage <= 50:
+        health_score = 95
+
+    elif usage_percentage <= 80:
+        health_score = 80
+
+    elif usage_percentage <= 100:
+        health_score = 60
+
+    else:
+        health_score = 30
+
+    if health_score >= 90:
+        financial_status = "Excellent"
+
+    elif health_score >= 75:
+        financial_status = "Good"
+
+    elif health_score >= 50:
+        financial_status = "Warning"
+
+    else:
+        financial_status = "Critical"
+
     if total_income > 0:
         savings_rate = (
             net_savings
@@ -87,29 +111,27 @@ def get_dashboard(
         savings_rate = 0
 
     if usage_percentage < 80:
-        status = "Within Budget"
+        budget_status = "Within Budget"
         message = (
-            f"Excellent! You have used only "
-            f"{round(usage_percentage, 2)}% "
-            f"of your monthly budget."
-        )
+            f"{financial_status} financial health. "
+            f"You have used only {round(usage_percentage, 2)}% of your monthly budget."
+    )
 
     elif usage_percentage <= 100:
-        status = "Warning"
+        budget_status = "Near Budget Limit"
         message = (
-            f"You have already used "
-            f"{round(usage_percentage, 2)}% "
-            f"of your budget. Spend carefully."
-        )
+            f"{financial_status} financial health. "
+            f"You have already used {round(usage_percentage, 2)}% of your monthly budget."
+    )
 
     else:
-        status = "Over Budget"
+        budget_status = "Over Budget"
         message = (
-            f"You have exceeded your budget "
-            f"by ₹{abs(remaining_budget):.2f}."
-        )
+            f"{financial_status} financial health. "
+            f"You have exceeded your monthly budget by ₹{abs(remaining_budget):.2f}."
+    )
 
-    return BudgetDashboard(
+    return DashboardResponse(
         monthly_limit=db_budget.monthly_limit,
         total_income=total_income,
         total_expenses=total_expenses,
@@ -117,6 +139,8 @@ def get_dashboard(
         net_savings=net_savings,
         savings_rate=round(savings_rate, 2),
         usage_percentage=round(usage_percentage, 2),
-        status=status,
+        health_score=health_score,
+        financial_status=financial_status,
+        budget_status=budget_status,
         message=message
-    )
+)

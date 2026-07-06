@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class BudgetDashboard(BaseModel):
+class DashboardResponse(BaseModel):
     monthly_limit: float
 
     total_income: float
@@ -16,6 +16,10 @@ class BudgetDashboard(BaseModel):
 
     usage_percentage: float
 
-    status: str
+    health_score: int
+
+    financial_status: str
+    
+    budget_status: str
 
     message: str
