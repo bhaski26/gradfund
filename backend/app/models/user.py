@@ -58,3 +58,9 @@ class User(Base):
     uselist=False,
     cascade="all, delete-orphan"
 )
+
+    incomes = relationship(
+    "Income",
+    back_populates="user",
+    cascade="all, delete-orphan"
+)
