@@ -70,3 +70,32 @@ def get_budget(
         )
 
     return db_budget
+
+@router.put("/", response_model=BudgetResponse)
+def update_budget(
+    budget: BudgetCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+        db_budget = (
+        db.query(Budget)
+        .filter(
+            Budget.user_id == current_user.id
+        )
+        .first()
+    )
+
+        if not db_budget:
+            raise HTTPException(
+            status_code=404,
+            detail="Budget not found"
+        )
+
+        db_budget.monthly_limit = budget.monthly_limit
+        db_budget.month = budget.month
+        db_budget.year = budget.year   
+
+        db.commit()
+        db.refresh(db_budget)
+
+        return db_budget

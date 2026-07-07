@@ -113,9 +113,11 @@ def get_dashboard(
     if usage_percentage < 80:
         budget_status = "Within Budget"
         message = (
-            f"{financial_status} financial health. "
-            f"You have used only {round(usage_percentage, 2)}% of your monthly budget."
-    )
+        f"{financial_status} financial health. "
+        f"You have used only {round(usage_percentage, 2)}% "
+        f"of your monthly budget and saved "
+        f"{round(savings_rate, 2)}% of your income this month."
+)
 
     elif usage_percentage <= 100:
         budget_status = "Near Budget Limit"
