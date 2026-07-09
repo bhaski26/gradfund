@@ -82,7 +82,113 @@ def get_insights(
             )
         )
 
-        return InsightsResponse(
+    db_budget = (
+    db.query(Budget)
+    .filter(
+        Budget.user_id == current_user.id
+    )
+    .first()
+)
+
+    if db_budget:
+        usage_percentage = (
+        total_expenses
+        / db_budget.monthly_limit
+    ) * 100
+    else:
+        usage_percentage = 0
+
+    if db_budget:
+        insights.append(
+            Insight(
+                type="info",
+                title="Budget Usage",
+                description=(
+                    f"You have used "
+                    f"{round(usage_percentage, 2)}% "
+                    f"of your monthly budget."
+                )
+            )
+    )
+
+    if db_budget and db_budget.monthly_limit > 0:
+        usage_percentage = (
+        total_expenses
+        / db_budget.monthly_limit
+    ) * 100
+    else:
+        usage_percentage = 0
+
+    category_summary = (
+    db.query(
+        Expense.category,
+        func.sum(
+            Expense.amount
+        ).label("total")
+    )
+    .filter(
+        Expense.user_id == current_user.id
+    )
+    .group_by(
+        Expense.category
+    )
+    .all()
+)
+
+    if category_summary:
+        highest_category = max(
+            category_summary,
+            key=lambda item: item.total
+        )
+
+    category_percentage = (
+        highest_category.total
+        / total_expenses
+    ) * 100
+
+    insights.append(
+        Insight(
+            type="spending",
+            title="Highest Spending Category",
+            description=(
+                f"{highest_category.category.title()} "
+                f"accounts for "
+                f"{round(category_percentage, 2)}% "
+                f"of your total expenses."
+            )
+        )
+    )  
+
+    potential_saving = highest_category.total * 0.10
+
+    insights.append(
+    Insight(
+        type="recommendation",
+        title="Savings Opportunity",
+        description=(
+            f"Reducing "
+            f"{highest_category.category.title()} "
+            f"expenses by 10% could save "
+            f"approximately ₹{round(potential_saving, 2)} "
+            f"this month."
+        )
+    )
+)
+
+    if savings_rate >= 80 and usage_percentage <= 50:
+        insights.append(
+        Insight(
+        type="achievement",
+        title="Financial Discipline",
+        description=(
+            "Congratulations! You maintained excellent "
+            "savings and stayed well within your monthly "
+            "budget this month."
+        )
+    )
+) 
+
+    return InsightsResponse(
     insights=insights
 )
 
