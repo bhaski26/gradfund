@@ -22,6 +22,10 @@ from app.services.insights_service import (
     generate_achievement_insight
 )
 
+from app.services.spending_analysis_service import (
+    get_highest_spending_category,
+)
+
 router = APIRouter(
     prefix="/insights",
     tags=["Insights"]
@@ -121,65 +125,44 @@ def get_insights(
     # Highest Spending Category
     # ----------------------------
 
-    category_summary = (
-        db.query(
-            Expense.category,
-            func.sum(
-                Expense.amount
-            ).label("total")
-        )
-        .filter(
-            Expense.user_id == current_user.id
-        )
-        .group_by(
-            Expense.category
-        )
-        .all()
+    highest_category, category_percentage = (
+    get_highest_spending_category(
+        db,
+        current_user.id,
     )
+)
 
-    if category_summary and total_expenses > 0:
+    insight = generate_spending_insight(
+    highest_category,
+    category_percentage
+)
 
-        highest_category = max(
-            category_summary,
-            key=lambda item: item.total
-        )
-
-        category_percentage = (
-            highest_category.total
-            / total_expenses
-        ) * 100
-
-        insight = generate_spending_insight(
-        highest_category,
-        category_percentage
-    )
-
-        if insight:
-            insights.append(insight)
+    if insight:
+        insights.append(insight)
 
         # ----------------------------
         # Recommendation
         # ----------------------------
 
-        insight = generate_recommendation_insight(
-        highest_category
+    insight = generate_recommendation_insight(
+    highest_category
 )
 
-        if insight:
-            insights.append(insight)
+    if insight:
+        insights.append(insight)
 
         # ----------------------------
         # Achievement
         # ----------------------------
 
-        insight = generate_achievement_insight(
-        savings_rate,
-        usage_percentage
+    insight = generate_achievement_insight(
+    savings_rate,
+    usage_percentage
     )
 
-        if insight:
-            insights.append(insight)
+    if insight:
+        insights.append(insight)
 
-        return InsightsResponse(
-            insights=insights
-        )
+    return InsightsResponse(
+        insights=insights
+    )
