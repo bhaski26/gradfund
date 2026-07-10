@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from enum import Enum
 
 
 class AIQuestion(BaseModel):
@@ -15,3 +16,10 @@ class FinancialContext(BaseModel):
     savings_rate: float
     health_score: int
     budget_status: str
+
+class Intent(str, Enum):
+    HEALTH = "HEALTH"
+    SAVINGS = "SAVINGS"
+    BUDGET = "BUDGET"
+    SPENDING = "SPENDING"
+    GENERAL = "GENERAL"
