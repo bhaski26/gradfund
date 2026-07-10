@@ -1,5 +1,9 @@
-from app.schemas.ai import (FinancialContext)
+from app.schemas.ai import FinancialContext
 from app.schemas.ai import Intent
+from app.services.insights_service import (
+    generate_spending_summary,
+    generate_savings_recommendation,
+)
 
 
 def detect_intent(
@@ -94,8 +98,10 @@ def generate_financial_advice(
 
 def answer_question(
     question: str,
-    context: FinancialContext
-) -> str:
+    context: FinancialContext,
+    highest_category=None,
+    category_percentage=0,
+):
 
     intent = detect_intent(question)
 
@@ -138,12 +144,20 @@ def answer_question(
 )
 
     elif intent == Intent.SPENDING:
+        summary = generate_spending_summary(
+            highest_category,
+            category_percentage,
+        )
+
+        recommendation = generate_savings_recommendation(
+            highest_category
+        )
+
         return (
-        "Your highest spending category "
-        "can be viewed in the Analytics section. "
-        "We'll soon provide personalized "
-        "category recommendations here."
-)
+            summary
+            + " "
+            + recommendation
+        )
 
     return generate_financial_advice(
     context

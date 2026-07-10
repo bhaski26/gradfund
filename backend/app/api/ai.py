@@ -211,11 +211,43 @@ def chat(
     budget_status=budget_status
 )
 
+    category_summary = (
+        db.query(
+            Expense.category,
+            func.sum(
+                Expense.amount
+            ).label("total")
+        )
+        .filter(
+            Expense.user_id == current_user.id
+        )
+        .group_by(
+            Expense.category
+        )
+        .all()
+    )
+
+    highest_category = None
+    category_percentage = 0
+
+    if category_summary and total_expenses > 0:
+        highest_category = max(
+            category_summary,
+            key=lambda item: item.total
+        )
+
+        category_percentage = (
+            highest_category.total
+            / total_expenses
+        ) * 100
+
     answer = answer_question(
-    request.question,
-    context
-)
+        request.question,
+        context,
+        highest_category,
+        category_percentage,
+    )
 
     return AIResponse(
-    answer=answer
-)
+        answer=answer
+    )

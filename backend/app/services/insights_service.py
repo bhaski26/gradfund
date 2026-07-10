@@ -103,3 +103,33 @@ def generate_achievement_insight(
         )
 
     return None
+
+def generate_spending_summary(
+    highest_category,
+    category_percentage: float,
+) -> str:
+
+    return (
+        f"Your highest spending category is "
+        f"{highest_category.category.title()}, "
+        f"accounting for "
+        f"{round(category_percentage, 2)}% "
+        f"of your total expenses."
+    )
+
+def generate_savings_recommendation(
+    highest_category,
+) -> str:
+
+    potential_saving = (
+        highest_category.total * 0.10
+    )
+
+    return (
+        f"Reducing "
+        f"{highest_category.category.title()} "
+        f"expenses by 10% could save "
+        f"approximately "
+        f"₹{round(potential_saving, 2)} "
+        f"this month."
+    )
