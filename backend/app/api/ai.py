@@ -39,6 +39,14 @@ from app.services.spending_analysis_service import (
     get_highest_spending_category,
 )
 
+from app.services.prompt_builder import (
+    build_financial_prompt,
+)
+
+from app.services.llm_service import (
+    generate_ai_response,
+)
+
 router = APIRouter(
     prefix="/ai",
     tags=["AI Coach"]
@@ -88,12 +96,25 @@ def chat(
     )
 )
 
-    answer = answer_question(
-        request.question,
-        context,
-        highest_category,
-        category_percentage,
-    )
+#    answer = answer_question(
+#        request.question,
+#        context,
+#        highest_category,
+#        category_percentage,
+#    )
+
+    prompt = build_financial_prompt(
+    request.question,
+    context,
+)
+
+    answer = generate_ai_response(
+    prompt
+)
+
+    return AIResponse(
+    answer=answer
+)
 
     return AIResponse(
         answer=answer
