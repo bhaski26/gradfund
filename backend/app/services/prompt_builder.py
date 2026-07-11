@@ -1,28 +1,47 @@
 from app.schemas.ai import FinancialContext
+from app.services.chat_memory_service import (
+    get_history,
+)
 
 def build_financial_prompt(
-    question: str,
-    context: FinancialContext,
-) -> str:
+    question,
+    context,
+    highest_category,
+    category_percentage,
+):
+
+    history = get_history()
+
+    conversation = ""
+
+    for message in history:
+
+        conversation += (
+            f"{message['role'].title()}: "
+            f"{message['content']}\n"
+        )
     
     system_prompt = """
     You are GradFund AI,
-    a professional financial coach.
+    an experienced personal financial coach.
 
-    Your role is to provide
-    clear,
-    friendly,
-    motivational,
-    and practical financial advice.
+    Your responsibility is to help users
+    understand their finances.
 
-    Always use ONLY the financial
-    information provided below.
+    Do not simply list the financial numbers.
 
-    Never invent numbers.
+    Instead:
 
-    Keep responses concise,
-    accurate,
-    and encouraging.
+    • Explain what the numbers mean.
+    • Mention strengths.
+    • Mention weaknesses.
+    • Suggest improvements.
+    • Be conversational.
+    • Be concise.
+    • Use the financial insights provided.
+    • Never invent financial information.
+    • If information is unavailable,
+    say so honestly.
     """
 
     financial_context = f"""
@@ -47,8 +66,32 @@ def build_financial_prompt(
     {context.budget_status}
     """
 
+    insights = f"""
+    Financial Insights
+
+    Highest Spending Category:
+    {highest_category.category.title()}
+
+    Highest Spending Percentage:
+    {round(category_percentage,2)}%
+
+    Budget Usage:
+    {round((context.total_expenses / context.total_income) * 100,2) if context.total_income else 0}%
+
+    Savings Recommendation:
+    Reducing your highest spending category by 10%
+    could save additional money every month.
+
+    Achievement:
+    Excellent Financial Discipline
+    """
+
     user_prompt = f"""
-    User Question:
+    Conversation History
+
+    {conversation}
+
+    Current Question:
 
     {question}
     """
@@ -57,6 +100,8 @@ def build_financial_prompt(
     system_prompt
     + "\n"
     + financial_context
+    + "\n"
+    + insights
     + "\n"
     + user_prompt
 )

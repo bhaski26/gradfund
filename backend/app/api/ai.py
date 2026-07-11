@@ -47,6 +47,10 @@ from app.services.llm_service import (
     generate_ai_response,
 )
 
+from app.services.chat_memory_service import (
+    add_message,
+)
+
 router = APIRouter(
     prefix="/ai",
     tags=["AI Coach"]
@@ -103,19 +107,29 @@ def chat(
 #        category_percentage,
 #    )
 
+
+    add_message(
+    "user",
+    request.question,
+)
+
     prompt = build_financial_prompt(
     request.question,
     context,
+    highest_category,
+    category_percentage,
 )
+
 
     answer = generate_ai_response(
     prompt
 )
 
-    return AIResponse(
-    answer=answer
+    add_message(
+    "assistant",
+    answer,
 )
 
     return AIResponse(
-        answer=answer
-    )
+    answer=answer
+)
