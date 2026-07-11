@@ -1,6 +1,68 @@
-backend/venv/
-backend/.env
+# -------------------------
+# Python
+# -------------------------
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual Environments
+venv/
+.venv/
+env/
+backend/venv/
+
+# Environment Variables
+.env
+.env.*
+
+# Python Cache
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# -------------------------
+# Node.js
+# -------------------------
+node_modules/
+frontend/node_modules/
+
+# Build
+dist/
+frontend/dist/
+
+# Vite
+.vite/
+
+# -------------------------
+# Logs
+# -------------------------
+*.log
+
+# -------------------------
+# IDE
+# -------------------------
 .vscode/
 .idea/
+
+# -------------------------
+# OS
+# -------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# -------------------------
+# TypeScript
+# -------------------------
+*.tsbuildinfo
+
+# Coverage
+coverage/
+htmlcov/
+
+# Testing
+.pytest_cache/
+
+# ESLint cache
+.eslintcache
