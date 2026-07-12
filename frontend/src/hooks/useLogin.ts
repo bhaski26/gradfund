@@ -1,12 +1,16 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { login } from "../services/auth";
-import type { LoginRequest } from "../services/auth";
+import { login as loginRequest } from "@/services/auth";
+import type { LoginRequest } from "@/services/auth";
+
+import { useAuth } from "@/contexts/AuthContext";
 
 export function useLogin() {
 
     const navigate = useNavigate();
+
+    const { login } = useAuth();
 
     const [loading, setLoading] =
         useState(false);
@@ -24,19 +28,22 @@ export function useLogin() {
             setError("");
 
             const response =
-                await login(credentials);
+                await loginRequest(credentials);
 
-            localStorage.setItem(
-                "token",
+            login(
                 response.access_token,
             );
 
-            navigate("/dashboard");
+            navigate(
+                "/dashboard"
+            );
 
-        } catch {
+        } catch (err) {
+
+            console.error(err);
 
             setError(
-                "Invalid email or password.",
+                "Invalid email or password."
             );
 
         } finally {
@@ -44,6 +51,7 @@ export function useLogin() {
             setLoading(false);
 
         }
+
     }
 
     return {
