@@ -1,8 +1,4 @@
-import axios from "axios";
-
-const API = axios.create({
-    baseURL: "http://127.0.0.1:8000",
-});
+import api from "./api";
 
 export interface LoginRequest {
     email: string;
@@ -32,7 +28,7 @@ export async function login(
     );
 
     const response =
-        await API.post(
+        await api.post(
 
             "/auth/login",
 
@@ -43,7 +39,7 @@ export async function login(
                     "Content-Type":
                         "application/x-www-form-urlencoded",
                 },
-            },
+            }
 
         );
 

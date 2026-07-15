@@ -56,7 +56,17 @@ export default function Dashboard() {
 
         <DashboardLayout>
 
-            <DashboardHeader />
+            <DashboardHeader
+
+            financialStatus={
+            data.financial_status
+            }
+
+            savingsRate={
+                data.savings_rate
+            }
+            
+            />
 
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
 

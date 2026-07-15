@@ -22,25 +22,56 @@ export default function MetricCard({
 
     return (
 
-        <div className="rounded-2xl bg-white p-6 shadow-sm">
+        <div
+            className="
+            rounded-3xl
+            bg-white
+            p-7
+            shadow-sm
+            transition-all
+            duration-300
+            hover:-translate-y-1
+            hover:shadow-xl
+        "
+        >
 
-            <div className="mb-4">
+            <div
+                className="
+                mb-5
+                inline-flex
+                rounded-2xl
+                bg-slate-100
+                p-4
+            "
+            >
 
                 {icon}
 
             </div>
 
-            <h3 className="text-slate-500">
+            <p
+                className="
+                text-sm
+                font-medium
+                text-slate-500
+            "
+            >
 
                 {title}
 
-            </h3>
+            </p>
 
-            <p className="mt-2 text-3xl font-bold">
+            <h2
+                className="
+                mt-3
+                text-4xl
+                font-bold
+            "
+            >
 
                 {value}
 
-            </p>
+            </h2>
 
         </div>
 
