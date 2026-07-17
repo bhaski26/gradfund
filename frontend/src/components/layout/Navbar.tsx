@@ -1,4 +1,5 @@
 import { useAuth } from "@/contexts/AuthContext";
+import ProfileDropdown from "./ProfileDropdown";
 
 export default function Navbar() {
 
@@ -20,17 +21,11 @@ export default function Navbar() {
 
             </div>
 
-            <button
+            <div className="flex items-center gap-4">
 
-                onClick={logout}
+                <ProfileDropdown />
 
-                className="rounded-lg bg-slate-900 px-5 py-2 text-white transition hover:bg-black"
-
-            >
-
-                Logout
-
-            </button>
+            </div>
 
         </header>
 

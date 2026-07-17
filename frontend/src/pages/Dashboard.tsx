@@ -1,7 +1,10 @@
 import DashboardLayout from "@/components/layout/DashboardLayout";
-
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import MetricCard from "@/components/dashboard/MetricCard";
+import BudgetProgress from "@/components/dashboard/BudgetProgress";
+import SavingsRateCard from "@/components/dashboard/SavingsRateCard";
+import AIInsightCard from "@/components/dashboard/AIInsightCard";
+import DashboardSkeleton from "@/components/dashboard/DashboardSkeleton";
 
 import {
     Wallet,
@@ -26,15 +29,7 @@ export default function Dashboard() {
 
     if (loading) {
 
-        return (
-
-            <DashboardLayout>
-
-                <p>Loading dashboard...</p>
-
-            </DashboardLayout>
-
-        );
+        return <DashboardSkeleton />;
 
     }
 
@@ -68,7 +63,7 @@ export default function Dashboard() {
             
             />
 
-            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+            <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-4">
 
                 <MetricCard
 
@@ -108,6 +103,29 @@ export default function Dashboard() {
 
                     icon={<HeartPulse size={28} />}
 
+                />
+
+            </div>
+
+            <div className="mt-8 grid gap-8 lg:grid-cols-2">
+
+                <BudgetProgress
+                    monthlyLimit={data.monthly_limit}
+                    remainingBudget={data.remaining_budget}
+                    usagePercentage={data.usage_percentage}
+                />
+
+                <SavingsRateCard
+                    savingsRate={data.savings_rate}
+                    financialStatus={data.financial_status}
+                />
+
+            </div>
+
+            <div className="mt-8">
+
+                <AIInsightCard
+                    message={data.message}
                 />
 
             </div>

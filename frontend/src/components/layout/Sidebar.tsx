@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 import {
     LayoutDashboard,
@@ -68,13 +68,19 @@ export default function Sidebar() {
 
                         return (
 
-                            <Link
+                            <NavLink
 
                                 key={link.href}
 
                                 to={link.href}
 
-                                className="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 transition hover:bg-slate-100 hover:text-black"
+                                className={({ isActive }) =>
+                                `flex items-center gap-3 rounded-xl px-4 py-3 transition-all duration-200 ${
+                                    isActive
+                                            ? "bg-slate-900 text-white shadow-lg"
+                                            : "text-slate-600 hover:bg-slate-100 hover:text-black"
+                                    }`
+                                }
 
                             >
 
@@ -82,7 +88,7 @@ export default function Sidebar() {
 
                                 {link.title}
 
-                            </Link>
+                            </NavLink>
 
                         );
 

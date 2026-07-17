@@ -30,8 +30,15 @@ export function useLogin() {
             const response =
                 await loginRequest(credentials);
 
-            login(
-                response.access_token,
+            console.log("Email:", credentials.email);
+
+            login(response.access_token);
+
+            localStorage.setItem("user_email", credentials.email);
+
+            console.log(
+                "Stored:",
+                localStorage.getItem("user_email")
             );
 
             navigate(
