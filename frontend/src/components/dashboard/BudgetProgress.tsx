@@ -20,7 +20,18 @@ export default function BudgetProgress({
 
     return (
 
-        <div className="rounded-3xl bg-white p-8 shadow-sm">
+        <div
+        className="
+        rounded-3xl
+        bg-white
+        p-8
+        shadow-sm
+        transition-all
+        duration-300
+        hover:-translate-y-1
+        hover:shadow-xl
+    "
+>
 
             <div className="flex items-center justify-between">
 

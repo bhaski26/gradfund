@@ -16,7 +16,24 @@ export default function DashboardHeader({
 
     return (
 
-        <div className="mb-10 rounded-3xl bg-gradient-to-r from-slate-900 to-slate-700 p-10 text-white shadow-xl">
+            <div
+                className="
+                    rounded-3xl
+                    bg-gradient-to-r
+                    from-slate-900
+                    to-slate-800
+                    px-10
+                    py-8
+                    mb-6
+                    text-white
+                    shadow-lg
+                    transition-all
+                    duration-300
+                    hover:-translate-y-1
+                    hover:scale-[1.01]
+                    hover:shadow-2xl
+                "
+            >
 
             <p className="text-sm uppercase tracking-widest text-slate-300">
 

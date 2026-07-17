@@ -42,10 +42,17 @@ export default function ProfileDropdown() {
 
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent
-                align="end"
-                className="w-64 rounded-xl"
-            >
+                <DropdownMenuContent
+                    align="end"
+                    className="
+                        w-64
+                        rounded-2xl
+                        border
+                        bg-white
+                        shadow-2xl
+                        p-2
+                    "
+                >
 
                 <DropdownMenuLabel>
 

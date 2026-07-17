@@ -16,7 +16,19 @@ export default function SavingsRateCard({
 
     return (
 
-        <div className="rounded-3xl bg-white p-8 shadow-sm">
+            <div 
+                className="
+                rounded-3xl
+                bg-white
+                p-8
+                shadow-sm
+                transition-all
+                duration-300
+                hover:-translate-y-1
+                hover:scale-[1.01]
+                hover:shadow-xl
+            " 
+            >
 
             <h2 className="text-xl font-bold">
 

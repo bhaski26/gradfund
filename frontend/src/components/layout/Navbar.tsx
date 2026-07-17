@@ -1,5 +1,6 @@
 import { useAuth } from "@/contexts/AuthContext";
 import ProfileDropdown from "./ProfileDropdown";
+import NotificationBell from "./NotificationBell";
 
 export default function Navbar() {
 
@@ -21,7 +22,9 @@ export default function Navbar() {
 
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
+
+                <NotificationBell />
 
                 <ProfileDropdown />
 

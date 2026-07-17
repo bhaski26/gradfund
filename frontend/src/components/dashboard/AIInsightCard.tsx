@@ -12,17 +12,22 @@ export default function AIInsightCard({
 
     return (
 
-        <div
-            className="
+            <div
+                className="
                 rounded-3xl
-                bg-gradient-to-r
-                from-indigo-600
-                to-blue-600
+                bg-gradient-to-br
+                from-slate-900
+                via-slate-800
+                to-slate-700
                 p-8
                 text-white
                 shadow-lg
+                transition-all
+                duration-300
+                hover:-translate-y-1
+                hover:shadow-2xl
             "
-        >
+            >
 
             <div className="flex items-center gap-3">
 
@@ -56,7 +61,24 @@ export default function AIInsightCard({
 
             </p>
 
+            <button
+                className="
+                    mt-8
+                    rounded-xl
+                    bg-white/20
+                    px-5
+                    py-3
+                    font-medium
+                    backdrop-blur
+                    transition
+                    hover:bg-white/30
+                "
+            >
+                View Full Analysis →
+            </button>
+
         </div>
+
 
     );
 

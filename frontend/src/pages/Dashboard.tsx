@@ -5,6 +5,7 @@ import BudgetProgress from "@/components/dashboard/BudgetProgress";
 import SavingsRateCard from "@/components/dashboard/SavingsRateCard";
 import AIInsightCard from "@/components/dashboard/AIInsightCard";
 import DashboardSkeleton from "@/components/dashboard/DashboardSkeleton";
+import DashboardError from "@/components/dashboard/DashboardError";
 
 import {
     Wallet,
@@ -33,18 +34,17 @@ export default function Dashboard() {
 
     }
 
-    if (error || !data) {
+    if (error) {
 
         return (
 
-            <DashboardLayout>
+            <DashboardError
 
-                <p>{error}</p>
-
-            </DashboardLayout>
+                onRetry={() => window.location.reload()}
+            />
 
         );
-
+        
     }
 
     return (
@@ -66,43 +66,35 @@ export default function Dashboard() {
             <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-4">
 
                 <MetricCard
-
                     title="Income"
-
-                    value={`₹${data.total_income}`}
-
-                    icon={<Wallet size={28} />}
-
+                    value={`₹${data.total_income.toLocaleString()}`}
+                    icon={<Wallet />}
+                    iconBgClass="bg-emerald-100"
+                    iconColorClass="text-emerald-600"
                 />
 
                 <MetricCard
-
                     title="Expenses"
-
-                    value={`₹${data.total_expenses}`}
-
-                    icon={<Receipt size={28} />}
-
+                    value={`₹${data.total_expenses.toLocaleString()}`}
+                    icon={<Receipt />}
+                    iconBgClass="bg-orange-100"
+                    iconColorClass="text-orange-600"
                 />
 
                 <MetricCard
-
                     title="Savings"
-
-                    value={`₹${data.net_savings}`}
-
-                    icon={<PiggyBank size={28} />}
-
+                    value={`₹${data.net_savings.toLocaleString()}`}
+                    icon={<PiggyBank />}
+                    iconBgClass="bg-indigo-100"
+                    iconColorClass="text-indigo-600"
                 />
 
                 <MetricCard
-
                     title="Health Score"
-
-                    value={`${data.health_score}`}
-
-                    icon={<HeartPulse size={28} />}
-
+                    value={`${data.health_score}%`}
+                    icon={<HeartPulse />}
+                    iconBgClass="bg-rose-100"
+                    iconColorClass="text-rose-600"
                 />
 
             </div>

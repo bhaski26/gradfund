@@ -1,22 +1,21 @@
 import type { ReactNode } from "react";
 
 interface MetricCardProps {
-
     title: string;
-
     value: string;
-
     icon: ReactNode;
 
+    iconBgClass?: string;
+    iconColorClass?: string;
 }
 
 export default function MetricCard({
-
     title,
-
     value,
-
     icon,
+
+    iconBgClass = "bg-slate-100",
+    iconColorClass = "text-slate-900",
 
 }: MetricCardProps) {
 
@@ -36,17 +35,17 @@ export default function MetricCard({
         >
 
             <div
-                className="
-                mb-5
-                inline-flex
-                rounded-2xl
-                bg-slate-100
-                p-4
-            "
+                className={`
+                    mb-5
+                    inline-flex
+                    rounded-2xl
+                    p-4
+                    ${iconBgClass}
+                `}
             >
-
-                {icon}
-
+                <div className={iconColorClass}>
+                    {icon}
+                </div>
             </div>
 
             <p
