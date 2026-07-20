@@ -10,6 +10,12 @@ export interface LoginResponse {
     token_type: string;
 }
 
+export interface RegisterRequest {
+    full_name: string;
+    email: string;
+    password: string;
+}
+
 export async function login(
     credentials: LoginRequest,
 ): Promise<LoginResponse> {
@@ -44,5 +50,16 @@ export async function login(
         );
 
     return response.data;
+
+}
+
+export async function register(
+    user: RegisterRequest,
+): Promise<void> {
+
+    await api.post(
+        "/auth/register",
+        user,
+    );
 
 }
