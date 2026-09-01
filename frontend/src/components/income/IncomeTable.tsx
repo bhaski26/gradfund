@@ -90,15 +90,8 @@ export default function IncomeTable({
                             </td>
 
                             <td className="px-6 py-4">
-                                {new Date(item.year).toLocaleDateString(
-                                    "en-IN",
-                                    {
-                                        day: "numeric",
-                                        month: "short",
-                                        year: "numeric",
-                                    }
-                                )}
-                            </td>
+                                {item.year}
+                            </td>                           
 
                             <td className="px-6 py-4">
                                 <div className="flex justify-center gap-2">
