@@ -27,12 +27,6 @@ export default function Income() {
     }
 
     async function handleDelete(id: number) {
-        const confirmed = window.confirm(
-            "Are you sure you want to delete this income?"
-        );
-
-        if (!confirmed) return;
-
         await removeIncome(id);
     }
 

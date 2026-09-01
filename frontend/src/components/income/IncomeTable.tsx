@@ -1,3 +1,7 @@
+import { useState } from "react";
+
+import DeleteIncomeDialog from "./DeleteIncomeDialog";
+
 import { Pencil, Trash2 } from "lucide-react";
 
 import type { Income } from "@/types/income";
@@ -17,6 +21,9 @@ export default function IncomeTable({
     onEdit,
     onDelete,
 }: IncomeTableProps) {
+
+    const [deleteId, setDeleteId] = useState<number | null>(null);
+
     if (loading) {
         return (
             <div className="rounded-2xl border bg-white p-8 text-center text-slate-500 shadow-sm">
@@ -107,7 +114,7 @@ export default function IncomeTable({
                                         variant="destructive"
                                         size="icon"
                                         onClick={() =>
-                                            onDelete(item.id)
+                                            setDeleteId(item.id)
                                         }
                                     >
                                         <Trash2 size={16} />
@@ -118,6 +125,19 @@ export default function IncomeTable({
                     ))}
                 </tbody>
             </table>
+
+            <DeleteIncomeDialog
+                open={deleteId !== null}
+                loading={loading}
+                onCancel={() => setDeleteId(null)}
+                onConfirm={async () => {
+                    if (deleteId === null) return;
+
+                    await onDelete(deleteId);
+
+                    setDeleteId(null);
+                }}
+            />
         </div>
     );
 }
