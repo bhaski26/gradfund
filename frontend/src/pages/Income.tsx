@@ -50,7 +50,12 @@ export default function Income() {
                     </div>
                 )}
 
-                <IncomeForm/>
+                <IncomeForm
+                    editingIncome={selectedIncome}
+                    onCancelEdit={() => setSelectedIncome(null)}
+                    onAdd={addIncome}
+                    onEdit={editIncome}
+                />
 
                 <IncomeTable
                     income={income}

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -6,19 +7,36 @@ import {
     type IncomeFormData,
 } from "@/schemas/incomeSchema";
 
-import { useIncome } from "@/hooks/useIncome";
+import type {
+    Income,
+    CreateIncomeRequest,
+    UpdateIncomeRequest,
+} from "@/types/income";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export default function IncomeForm() {
-    const {
-        addIncome,
-        loading,
-        error,
-    } = useIncome();
+interface IncomeFormProps {
+    editingIncome?: Income | null;
+    onCancelEdit?: () => void;
+    onAdd: (data: CreateIncomeRequest) => Promise<void>;
+    onEdit: (
+        id: number,
+        data: UpdateIncomeRequest
+    ) => Promise<void>;
+    loading: boolean;
+    error: string;
+}
 
+export default function IncomeForm({
+    editingIncome = null,
+    onCancelEdit,
+    onAdd,
+    onEdit,
+    loading,
+    error,
+}: IncomeFormProps) {
     const {
         register,
         handleSubmit,
@@ -35,8 +53,33 @@ export default function IncomeForm() {
         },
     });
 
+    useEffect(() => {
+        if (editingIncome) {
+            reset({
+                source: editingIncome.source,
+                amount: editingIncome.amount,
+                month: editingIncome.month,
+                year: editingIncome.year,
+            });
+        } else {
+            reset({
+                source: "",
+                amount: 0,
+                month: "",
+                year: new Date().getFullYear(),
+            });
+        }
+    }, [editingIncome, reset]);
+
     async function onSubmit(data: IncomeFormData) {
-        await addIncome(data);
+        if (editingIncome) {
+            await onEdit(editingIncome.id, data);
+            onCancelEdit?.();
+            return;
+        }
+
+        await onAdd(data);
+
         reset({
             source: "",
             amount: 0,
@@ -45,16 +88,20 @@ export default function IncomeForm() {
         });
     }
 
+    const isEditing = editingIncome !== null;
+
     return (
         <div className="rounded-3xl border bg-white p-8 shadow-xl">
             {/* Header */}
             <div className="mb-8">
                 <h2 className="text-3xl font-bold">
-                    Add Income
+                    {isEditing ? "Edit Income" : "Add Income"}
                 </h2>
 
                 <p className="mt-2 text-slate-500">
-                    Record your monthly income.
+                    {isEditing
+                        ? "Update your income record."
+                        : "Record your monthly income."}
                 </p>
             </div>
 
@@ -170,16 +217,41 @@ export default function IncomeForm() {
                     )}
                 </div>
 
-                {/* Submit */}
-                <Button
-                    type="submit"
-                    className="h-11 w-full"
-                    disabled={loading}
-                >
-                    {loading
-                        ? "Saving Income..."
-                        : "Add Income"}
-                </Button>
+                {/* Actions */}
+                <div className="flex gap-3">
+                    {isEditing && (
+                        <Button
+                            type="button"
+                            variant="outline"
+                            className="h-11 flex-1"
+                            onClick={() => {
+                                reset({
+                                    source: "",
+                                    amount: 0,
+                                    month: "",
+                                    year: new Date().getFullYear(),
+                                });
+
+                                onCancelEdit?.();
+                            }}
+                            disabled={loading}
+                        >
+                            Cancel
+                        </Button>
+                    )}
+
+                    <Button
+                        type="submit"
+                        className="h-11 flex-1"
+                        disabled={loading}
+                    >
+                        {loading
+                            ? "Saving Income..."
+                            : isEditing
+                                ? "Update Income"
+                                : "Add Income"}
+                    </Button>
+                </div>
             </form>
         </div>
     );
