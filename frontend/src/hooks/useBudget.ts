@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 
 import {
-    getBudget,
+    getBudgets,
     createBudget,
     updateBudget,
+    deleteBudget,
 } from "@/services/budget";
 
 import type {
@@ -13,71 +14,119 @@ import type {
 } from "@/types/budget";
 
 export function useBudget() {
-    const [budget, setBudget] = useState<Budget | null>(null);
+    const [budgets, setBudgets] = useState<Budget[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
-    async function fetchBudget() {
+    async function fetchBudgets() {
         setLoading(true);
         setError("");
 
         try {
-            const data = await getBudget();
-            setBudget(data);
+            const data = await getBudgets();
+            setBudgets(data);
         } catch (err: any) {
             setError(
                 err.response?.data?.detail ??
-                "Failed to load budget."
+                "Failed to load budgets."
             );
         } finally {
             setLoading(false);
         }
     }
 
-    async function addBudget(data: CreateBudgetRequest) {
+    async function addBudget(
+        data: CreateBudgetRequest
+    ) {
         setLoading(true);
         setError("");
 
         try {
             const newBudget = await createBudget(data);
-            setBudget(newBudget);
+
+            setBudgets((currentBudgets) => [
+                newBudget,
+                ...currentBudgets,
+            ]);
         } catch (err: any) {
             setError(
                 err.response?.data?.detail ??
                 "Failed to create budget."
             );
+
+            throw err;
         } finally {
             setLoading(false);
         }
     }
 
-    async function editBudget(data: UpdateBudgetRequest) {
+    async function editBudget(
+        id: number,
+        data: UpdateBudgetRequest
+    ) {
         setLoading(true);
         setError("");
 
         try {
-            const updatedBudget = await updateBudget(data);
-            setBudget(updatedBudget);
+            const updatedBudget = await updateBudget(
+                id,
+                data
+            );
+
+            setBudgets((currentBudgets) =>
+                currentBudgets.map((budget) =>
+                    budget.id === id
+                        ? updatedBudget
+                        : budget
+                )
+            );
         } catch (err: any) {
             setError(
                 err.response?.data?.detail ??
                 "Failed to update budget."
             );
+
+            throw err;
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    async function removeBudget(id: number) {
+        setLoading(true);
+        setError("");
+
+        try {
+            await deleteBudget(id);
+
+            setBudgets((currentBudgets) =>
+                currentBudgets.filter(
+                    (budget) => budget.id !== id
+                )
+            );
+        } catch (err: any) {
+            setError(
+                err.response?.data?.detail ??
+                "Failed to delete budget."
+            );
+
+            throw err;
         } finally {
             setLoading(false);
         }
     }
 
     useEffect(() => {
-        fetchBudget();
+        fetchBudgets();
     }, []);
 
     return {
-        budget,
+        budgets,
         loading,
         error,
-        fetchBudget,
+        fetchBudgets,
         addBudget,
         editBudget,
+        removeBudget,
     };
 }

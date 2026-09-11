@@ -10,11 +10,12 @@ import type { Budget as BudgetType } from "@/types/budget";
 
 export default function Budget() {
     const {
-        budget,
+        budgets,
         loading,
         error,
         addBudget,
         editBudget,
+        removeBudget,
     } = useBudget();
 
     const [editingBudget, setEditingBudget] =
@@ -26,6 +27,22 @@ export default function Budget() {
 
     function handleCancelEdit() {
         setEditingBudget(null);
+    }
+
+    async function handleEditBudget(
+        id: number,
+        data: BudgetType
+    ) {
+        await editBudget(id, data);
+        setEditingBudget(null);
+    }
+
+    async function handleDeleteBudget(id: number) {
+        await removeBudget(id);
+
+        if (editingBudget?.id === id) {
+            setEditingBudget(null);
+        }
     }
 
     return (
@@ -45,15 +62,16 @@ export default function Budget() {
                     editingBudget={editingBudget}
                     onCancelEdit={handleCancelEdit}
                     onAdd={addBudget}
-                    onEdit={editBudget}
+                    onEdit={handleEditBudget}
                     loading={loading}
                     error={error}
                 />
 
                 <BudgetTable
-                    budget={budget}
+                    budgets={budgets}
                     loading={loading}
                     onEdit={handleEdit}
+                    onDelete={handleDeleteBudget}
                 />
             </div>
         </DashboardLayout>

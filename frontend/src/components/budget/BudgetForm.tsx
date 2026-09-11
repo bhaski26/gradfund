@@ -21,7 +21,10 @@ interface BudgetFormProps {
     editingBudget?: Budget | null;
     onCancelEdit?: () => void;
     onAdd: (data: CreateBudgetRequest) => Promise<void>;
-    onEdit: (data: UpdateBudgetRequest) => Promise<void>;
+    onEdit: (
+        id: number,
+        data: UpdateBudgetRequest
+    ) => Promise<void>;
     loading: boolean;
     error: string;
 }
@@ -66,7 +69,7 @@ export default function BudgetForm({
 
     async function onSubmit(data: BudgetFormData) {
         if (editingBudget) {
-            await onEdit(data);
+            await onEdit(editingBudget.id, data);
             return;
         }
 
